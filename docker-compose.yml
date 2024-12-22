@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: inventory-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: inventory
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./Backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/inventory
+      - PORT=3000
+      - SECRET_KEY=abc123-ultra-secret-long-string
+    depends_on:
+      mongo:
+        condition: service_healthy
+    volumes:
+      - ./Backend:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "npm start"
+
+  frontend:
+    build:
+      context: ./Frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_SERVER=http://localhost:3000
+    depends_on:
+      - backend
+    volumes:
+      - ./Frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "npm run dev -- --host 0.0.0.0"
+    stdin_open: true
+    tty: true
+
+volumes:
+  mongo_data:
