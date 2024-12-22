@@ -53,8 +53,8 @@ function LoginScreen() {
             <a href="#">Inventory Management</a>
           </div>
           <p className="mt-6 font-normal text-center text-gray-300 md:mt-0">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat
-            eligendi perspiciatis, sapiente si.
+            Manage your inventory, track your products, and make data-driven decisions
+            with our comprehensive inventory management system.
           </p>
           <p className="flex flex-col items-center justify-center mt-10 text-center">
             <span>Don't have an account?</span>

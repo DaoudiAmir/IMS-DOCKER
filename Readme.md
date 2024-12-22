@@ -1,238 +1,285 @@
-# Inventory Management System (IMS)
+# Inventory Management System (IMS) - Microservices with Docker
 
-An Inventory Management System built by sparta with Vite, React.js for the frontend, and Node.js, Express, and MongoDB for the backend.
+A comprehensive Inventory Management System built using a microservices architecture, containerized with Docker. This project demonstrates the implementation of a modern web application using containerization and orchestration technologies.
 
-## Table of Contents
+## Team Information
 
-- [Features](#features)
-- [Folder Structure](#folder-structure)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Running the Application](#running-the-application)
-- [Environment Variables](#environment-variables)
-- [API Endpoints](#api-endpoints)
-- [Contributing](#contributing)
-- [License](#license)
+**Class**: TD48 - ESIEA
+
+**Team Members**:
+- DAOUDI Amir Salah Eddine
+- HELOUI Youssef
+- ZEJLI Mohammed Nadir
+- MOURTADA Heddy
+
+## Project Overview
+
+This project is developed as part of the Containerization and Virtualization course, focusing on creating a microservices-based application using Docker. The system consists of three main components:
+
+- **Frontend Service**: Built with Vite and React.js
+- **Backend Service**: Developed using Node.js and Express.js
+- **Database Service**: MongoDB for data persistence
+
+### Architecture Overview
+
+```plaintext
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│    Frontend     │     │     Backend     │     │    Database     │
+│  (Vite/React)   │────▶│  (Node/Express) │────▶│    (MongoDB)    │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
 
 ## Features
 
 - User authentication and authorization
-- Manage products, companies, locations, and brands
-- Track product history
-- Dashboard with analytics
+- Product management (CRUD operations)
+- Company and location tracking
+- Brand management
+- Product history tracking
+- Analytics dashboard
 - Responsive design with Tailwind CSS
 
-## Folder Structure
+## Technical Stack
 
-```plaintext
-C:.
-├───Backend
-│   │   .env
-│   │   .gitignore
-│   │   app.js
-│   │   config.npmrc
-│   │   package-lock.json
-│   │   package.json
-│   │   README.md
-│   │
-│   ├───controllers
-│   │       product_controller.js
-│   │       user_controllers.js
-│   │
-│   ├───db
-│   │       user_db.js
-│   │
-│   ├───middlewares
-│   │       user_auth.js
-│   │
-│   ├───models
-│   │       company_model.js
-│   │       history_model.js
-│   │       locations_models.js
-│   │       product_model.js
-│   │       user_model.js
-│   │
-│   ├───routes
-│   │       analyticsRoutes.js
-│   │       companyRoutes.js
-│   │       historyRoutes.js
-│   │       locationRoutes.js
-│   │       productRoutes.js
-│   │       user_routes.js
-│   │
-│   └───utils
-│           user_utils.js
-│
-└───Frontend
-    │   .env
-    │   .eslintrc.cjs
-    │   .gitignore
-    │   index.html
-    │   package-lock.json
-    │   package.json
-    │   postcss.config.js
-    │   README.md
-    │   tailwind.config.js
-    │   vite.config.js
-    │
-    ├───public
-    │       vite.svg
-    │
-    └───src
-        │   App.jsx
-        │   index.css
-        │   main.jsx
-        │   router.jsx
-        │
-        ├───assets
-        │       admin-logo.svg
-        │       authenticate.svg
-        │       menu.svg
-        │       react.svg
-        │       undraw_empty_re.svg
-        │       user-logo.svg
-        │
-        ├───components
-        │       HeaderBar.jsx
-        │       LoadingIndicator.jsx
-        │       LogoutButton.jsx
-        │       PopUpComponenet.jsx
-        │       ShowErrorMessage.jsx
-        │       ShowSuccessMesasge.jsx
-        │       SideNavbar.jsx
-        │       WarrantyExpiringProductsTableComponent.jsx
-        │
-        └───screens
-            │   InventoryFormScreen.jsx
-            │
-            ├───brands
-            │       BrandsScreen.jsx
-            │       EditBrandsScreen.jsx
-            │       NewBrandsScreen.jsx
-            │
-            ├───dashboard
-            │   │   DashBoardLayout.jsx
-            │   │   DashBoardScreen.jsx
-            │   │
-            │   └───components
-            │           AnalyticsComponent.jsx
-            │           PieChart.jsx
-            │
-            ├───locations
-            │       EditLocationScreen.jsx
-            │       LocationsScreen.jsx
-            │       NewLocationScreen.jsx
-            │
-            ├───login
-            │       AuthLayout.jsx
-            │       LoginScreen.jsx
-            │       SignupScreen.jsx
-            │
-            ├───product
-            │       AddNewProductScreen.jsx
-            │       ProductEditScreen.jsx
-            │       ProductHistoryScreen.jsx
-            │       ProductInfoScreen.jsx
-            │       ProductsScreen.jsx
-            │
-            └───users
-                │   UserManagementScreen.jsx
-                │
-                └───components
-                        ChangeRolePopup.jsx
-                        ManageUserTableRow.jsx
+- **Frontend**:
+  - Vite
+  - React.js
+  - Tailwind CSS
+  - Redux for state management
+
+- **Backend**:
+  - Node.js
+  - Express.js
+  - JWT for authentication
+  - MongoDB drivers
+
+- **Database**:
+  - MongoDB
+
+- **DevOps**:
+  - Docker
+  - Docker Compose
+  - Multi-stage builds
+
+## Docker Setup
+
+The application is fully containerized using Docker, with each service running in its own container:
+
+### Services Architecture
+
+1. **MongoDB Service**:
+   - Uses official MongoDB 6.0 image
+   - Persistent volume for data storage
+   - Health checks for reliability
+
+2. **Backend Service**:
+   - Multi-stage build for optimization
+   - Node.js 18.8.0 base image
+   - Environment variables for configuration
+   - Waits for MongoDB availability
+
+3. **Frontend Service**:
+   - Node.js 18 with Alpine for minimal size
+   - Vite development server
+   - Environment variables for API configuration
+
+### Docker Compose Configuration
+
+Our `docker-compose.yml` orchestrates all services:
+
+```yaml
+services:
+  mongo:
+    image: mongo:6.0
+    volumes: 
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+
+  backend:
+    build: ./Backend
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  frontend:
+    build: ./Frontend
+    depends_on:
+      - backend
 ```
 
-## Prerequisites
+### Building and Running
 
-- Node.js
-- npm or yarn
-- MongoDB
+```bash
+# Build and start all services
+docker-compose up --build
 
-## Installation
+# View service logs
+docker-compose logs [service_name]
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
-   ```
+# Stop all services
+docker-compose down
 
-2. **Backend Setup:**
-   ```bash
-   cd Backend
-   npm install
-   ```
-
-3. **Frontend Setup:**
-   ```bash
-   cd ../Frontend
-   npm install
-   ```
-
-## Running the Application
-
-1. **Run Backend:**
-   ```bash
-   cd Backend
-   npm start
-   ```
-
-2. **Run Frontend:**
-   ```bash
-   cd ../Frontend
-   npm run dev
-   ```
+# Remove volumes (if needed)
+docker-compose down -v
+```
 
 ## Environment Variables
 
-Create a `.env` file in the Backend and Frontend directories and configure the following:
-
-### Backend `.env`:
+### Backend (.env)
 ```env
-MONGODB_URI=your_mongodb_connection_string
+MONGODB_URI=mongodb://mongo:27017/inventory
 PORT=3000
-SECRET_KEY=your_secret_key
-NODE_ENV=development
-ORIGIN=http://localhost:3000
+SECRET_KEY=your-secret-key
 ```
 
-### Frontend `.env`:
+### Frontend (.env)
 ```env
-VITE_SERVER=https://inventory-management-backend-hsaf.onrender.com
-VITE_MODE=PROD
-VITE_LOCAL=http://localhost:3000
+VITE_SERVER=http://localhost:3000
 ```
 
 ## API Endpoints
 
-### User Routes
+### Authentication
+- POST `/api/v1/auth/register` - Register new user
+- POST `/api/v1/auth/login` - User login
 
-- **POST** `/api/v1/users/signup` - Sign up a new user
-- **POST** `/api/v1/users/login` - Log in a user
-- **GET** `/api/v1/users/logout` - Log out a user
+### Products
+- GET `/api/v1/products` - List all products
+- POST `/api/v1/products` - Add new product
+- PUT `/api/v1/products/:id` - Update product
+- DELETE `/api/v1/products/:id` - Delete product
 
-### Product Routes
+### Analytics
+- GET `/api/v1/analytics` - Get analytics data
 
-- **GET** `/api/v1/products` - Get all products
-- **POST** `/api/v1/products` - Add a new product
-- **PUT** `/api/v1/products/:id` - Update a product
-- **DELETE** `/api/v1/products/:id` - Delete a product
+## Development
 
-### History Routes
+### Prerequisites
+- Docker Desktop
+- Node.js 18.x (for local development)
+- Git
 
-- **GET** `/api/v1/history/:productId` - Get product history
+### Local Development
+1. Clone the repository
+2. Install dependencies for each service
+3. Set up environment variables
+4. Run `docker-compose up --build`
 
-### Company Routes
+## Troubleshooting
 
-- **GET** `/api/v1/companies` - Get all companies
-- **POST** `/api/v1/companies` - Add a new company
+Common issues and solutions:
 
-### Location Routes
+1. **Frontend Connection Issues**:
+   - Ensure Vite is configured to listen on all interfaces
+   - Check CORS configuration in backend
 
-- **GET** `/api/v1/locations` - Get all locations
-- **POST** `/api/v1/locations` - Add a new location
+2. **Database Connection**:
+   - Verify MongoDB container is healthy
+   - Check connection string format
 
-### Analytics Routes
+3. **Container Startup**:
+   - Use `docker-compose logs` to debug
+   - Ensure all ports are available
 
-- **GET** `/api/v1/analytics` - Get analytics data
+## Project Structure
 
+```plaintext
+IMS-DOCKER/
+├── Backend/
+│   ├── controllers/
+│   │   ├── product_controller.js    # Product-related operations
+│   │   └── user_controllers.js      # User authentication and management
+│   ├── db/
+│   │   └── user_db.js              # Database connection configuration
+│   ├── middlewares/
+│   │   └── user_auth.js            # Authentication middleware
+│   ├── models/
+│   │   ├── company_model.js        # Company data schema
+│   │   ├── history_model.js        # Product history schema
+│   │   ├── locations_models.js     # Location data schema
+│   │   ├── product_model.js        # Product data schema
+│   │   └── user_model.js           # User data schema
+│   ├── routes/
+│   │   ├── analyticsRoutes.js      # Analytics API endpoints
+│   │   ├── companyRoutes.js        # Company management endpoints
+│   │   ├── historyRoutes.js        # Product history endpoints
+│   │   ├── locationRoutes.js       # Location management endpoints
+│   │   ├── productRoutes.js        # Product management endpoints
+│   │   └── user_routes.js          # User authentication routes
+│   ├── utils/
+│   │   └── user_utils.js           # Utility functions
+│   ├── .env                        # Backend environment variables
+│   ├── app.js                      # Main application entry
+│   ├── Dockerfile                  # Backend container configuration
+│   ├── package.json               
+│   └── seed.js                     # Database seeding script
+│
+├── Frontend/
+│   ├── src/
+│   │   ├── assets/                 # Static assets
+│   │   │   ├── admin-logo.svg
+│   │   │   ├── authenticate.svg
+│   │   │   ├── menu.svg
+│   │   │   ├── react.svg
+│   │   │   └── user-logo.svg
+│   │   ├── components/             # Reusable UI components
+│   │   │   ├── HeaderBar.jsx
+│   │   │   ├── LoadingIndicator.jsx
+│   │   │   ├── LogoutButton.jsx
+│   │   │   ├── PopUpComponent.jsx
+│   │   │   ├── ShowErrorMessage.jsx
+│   │   │   ├── ShowSuccessMessage.jsx
+│   │   │   └── SideNavbar.jsx
+│   │   ├── screens/               # Application views
+│   │   │   ├── brands/           # Brand management screens
+│   │   │   ├── dashboard/        # Analytics dashboard
+│   │   │   ├── locations/        # Location management
+│   │   │   ├── login/           # Authentication screens
+│   │   │   ├── product/         # Product management
+│   │   │   └── users/           # User management
+│   │   ├── App.jsx              # Root component
+│   │   ├── main.jsx             # Application entry point
+│   │   └── router.jsx           # Route definitions
+│   ├── .env                     # Frontend environment variables
+│   ├── Dockerfile              # Frontend container configuration
+│   ├── index.html             # HTML entry point
+│   ├── package.json
+│   ├── tailwind.config.js     # Tailwind CSS configuration
+│   └── vite.config.js         # Vite build configuration
+│
+├── docker-compose.yml         # Multi-container orchestration
+└── README.md                 # Project documentation
+```
+
+### Key Directories
+
+1. **Backend/**
+   - `controllers/`: Business logic for different features
+   - `models/`: MongoDB schema definitions
+   - `routes/`: API endpoint definitions
+   - `middlewares/`: Request processing middleware
+   - `utils/`: Helper functions and utilities
+
+2. **Frontend/**
+   - `src/components/`: Reusable React components
+   - `src/screens/`: Main application views
+   - `src/assets/`: Static files (images, icons)
+   - `src/router.jsx`: Application routing logic
+
+3. **Root Directory**
+   - `docker-compose.yml`: Defines and configures all services
+   - `README.md`: Project documentation and setup instructions
+
+### Configuration Files
+
+1. **Backend Configuration**
+   - `.env`: Environment variables
+   - `package.json`: Dependencies and scripts
+   - `Dockerfile`: Container build instructions
+
+2. **Frontend Configuration**
+   - `.env`: Environment variables
+   - `vite.config.js`: Build configuration
+   - `tailwind.config.js`: CSS framework settings
+   - `Dockerfile`: Container build instructions

@@ -48,13 +48,13 @@ function SignupScreen() {
             <a href="#">Inventory Management</a>
           </div>
           <p className="mt-6 font-normal text-center text-gray-300 md:mt-0">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat
-            eligendi perspiciatis, sapiente si.
+            Join our comprehensive inventory management system to streamline your 
+            operations, track products efficiently, and make informed decisions.
           </p>
           <p className="flex flex-col items-center justify-center mt-10 text-center">
             <span>Already have an account?</span>
             <Link to={"/auth"} className="underline">
-              Get Started!
+              Sign In
             </Link>
           </p>
           <p className="mt-6 text-sm text-center text-gray-300">
