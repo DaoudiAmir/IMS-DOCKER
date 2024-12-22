@@ -153,6 +153,49 @@ VITE_SERVER=http://localhost:3000
 ### Analytics
 - GET `/api/v1/analytics` - Get analytics data
 
+## Application Screenshots
+
+### 1. Dashboard Home
+![Dashboard Home](./figs/1-home.png)
+The main dashboard provides a comprehensive overview of your inventory system, featuring:
+- Real-time analytics and metrics
+- Product status distribution
+- Warranty expiration tracking
+- Team information and project details
+
+### 2. Brand Management
+![Add New Brand](./figs/2-add%20new%20brand.png)
+Efficiently manage product brands with features including:
+- Add new brands/manufacturers
+- Track brand-specific products
+- Manage brand relationships
+- Update brand information
+
+### 3. Location Management
+![New Location](./figs/3-new%20location.png)
+Keep track of your inventory across different locations:
+- Add new storage locations
+- Monitor stock levels by location
+- Manage location capacity
+- Track product movements
+
+### 4. Product Management
+![New Product](./figs/4-new%20product.png)
+Comprehensive product management interface offering:
+- Add new products with detailed information
+- Track product specifications
+- Monitor stock levels
+- Manage product warranties
+- Update product information
+
+### 5. User Management
+![Manage Users](./figs/5-manage%20users.png)
+Secure user management system featuring:
+- User role management
+- Access control
+- User activity tracking
+- Account management
+
 ## Development
 
 ### Prerequisites

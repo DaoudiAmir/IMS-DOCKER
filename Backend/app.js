@@ -42,9 +42,18 @@ app.get("/", (req, res) => {
   res.send("<h1>working nicely</h1>");
 });
 
+// Global error handling middleware
 app.use((error, req, res, next) => {
-  console.log(error, error.message);
-  return res.status(400).json({ message: "internal server error" });
+  console.error('Error:', error);
+  
+  const status = error.status || 500;
+  const message = error.message || "Internal server error";
+  
+  res.status(status).json({
+    success: false,
+    message,
+    stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+  });
 });
 
 app.listen(process.env.PORT, () => {

@@ -50,6 +50,14 @@ export const getAllUsers = async (req, res) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide email and password",
+      });
+    }
+
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return res.status(404).json({
@@ -67,14 +75,22 @@ export const login = async (req, res, next) => {
     }
 
     sendcookie(user, res, `welcome back,${user.name}`, 201);
-  } catch (e) {
-    throw next(e);
+  } catch (error) {
+    next(error);
   }
 };
 
 export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
+    
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields",
+      });
+    }
+
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
@@ -87,8 +103,8 @@ export const register = async (req, res, next) => {
     user = await User.create({ name, email, password: hashedpassword });
 
     sendcookie(user, res, "successfully registered", 201);
-  } catch (e) {
-    throw next(e);
+  } catch (error) {
+    next(error);
   }
 };
 
