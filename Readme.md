@@ -9,7 +9,7 @@ A comprehensive Inventory Management System built using a microservices architec
 **Team Members**:
 - DAOUDI Amir Salah Eddine
 - HELOUI Youssef
-- ZEJLI Mohammed Nadir
+- ZEJLI Mohamed-Nadir
 - MOURTADA Heddy
 
 ## Project Overview
